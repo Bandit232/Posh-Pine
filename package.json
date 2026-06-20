@@ -1,0 +1,22 @@
+{
+  "name": "poshpine-client",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite"
+  },
+  "dependencies": {
+    "@ffmpeg/ffmpeg": "^0.12.15",
+    "canvas": "^3.2.3",
+    "gif-encoder": "^0.7.2",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^5.7.284",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "whammy": "^0.0.1"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}
