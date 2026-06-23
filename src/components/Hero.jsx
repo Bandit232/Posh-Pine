@@ -13,7 +13,7 @@ export default function Hero() {
 
           <div className="hero-actions">
             <a href="#shop" className="btn btn-primary">Shop Now</a>
-            <a href="#collections" className="btn btn-secondary">View Collections</a>
+            <a href="#shop" className="btn btn-secondary">View Shop</a>
           </div>
 
           <div className="hero-points">

@@ -11,7 +11,8 @@ export default function CartDrawer({
   updateQuantity,
   updateSize,
   totalPrice,
-  onCheckout
+  onCheckout,
+  onProceedToCheckout
 }) {
   return (
     <>
@@ -68,8 +69,13 @@ export default function CartDrawer({
             <br />
             Outside Dhaka 120 tk.
           </p>
-          <button className="btn btn-primary full-width" onClick={onCheckout}>
-            Checkout on WhatsApp
+          <button
+            className="btn btn-primary full-width"
+            onClick={() => {
+              if (onProceedToCheckout) onProceedToCheckout();
+            }}
+          >
+            Proceed to Checkout
           </button>
         </div>
       </aside>

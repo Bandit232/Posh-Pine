@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
-import Collections from "./components/Collections";
 import ProductGrid from "./components/ProductGrid";
 import SizeChart from "./components/SizeChart";
 import About from "./components/About";
 import CartDrawer from "./components/CartDrawer";
 import Footer from "./components/Footer";
+import CheckoutReview from "./components/CheckoutReview";
 
 const WHATSAPP_NUMBER = "01860265807";
 
@@ -374,6 +374,7 @@ export default function App() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
 
   useEffect(() => {
     // Use the comprehensive collection products directly
@@ -439,7 +440,35 @@ export default function App() {
 
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
+    setShowCheckout(false);
   };
+
+  const proceedToCheckout = () => {
+    setCartOpen(false);
+    setShowCheckout(true);
+  };
+
+  const closeCheckout = () => setShowCheckout(false);
+
+  if (showCheckout) {
+    return (
+      <>
+        <div className="topbar">New arrivals live now • Premium printed shirts • Sizes S to XL</div>
+        <Header cartCount={totalItems} onOpenCart={() => setCartOpen(true)} />
+
+        <main>
+          <CheckoutReview
+            cart={cart}
+            totalPrice={totalPrice}
+            onBack={closeCheckout}
+            onConfirm={handleWhatsAppCheckout}
+          />
+        </main>
+
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
@@ -451,7 +480,6 @@ export default function App() {
 
       <main>
         <Hero />
-        <Collections />
         <ProductGrid products={products} onAddToCart={addToCart} />
         <SizeChart />
         <About />
@@ -467,6 +495,7 @@ export default function App() {
         updateSize={updateSize}
         totalPrice={totalPrice}
         onCheckout={handleWhatsAppCheckout}
+        onProceedToCheckout={proceedToCheckout}
       />
     </>
   );

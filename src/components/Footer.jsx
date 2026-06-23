@@ -11,7 +11,6 @@ export default function Footer() {
 
         <div className="footer-links">
           <a href="#shop">Shop</a>
-          <a href="#collections">Collections</a>
           <a href="#size-chart">Size Chart</a>
           <a
             href="https://www.instagram.com/poshpinee/"

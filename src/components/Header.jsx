@@ -11,7 +11,6 @@ export default function Header({ cartCount, onOpenCart }) {
 
         <nav className="nav-links">
           <a href="#home">Home</a>
-          <a href="#collections">Collections</a>
           <a href="#shop">Shop</a>
           <a href="#size-chart">Size Chart</a>
           <a href="#about">About</a>
