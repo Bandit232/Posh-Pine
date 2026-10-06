@@ -1,91 +1,145 @@
-const express = require('express');
-const cors = require('cors');
+const path = require("path");
+const fs = require("fs");
+const express = require("express");
+const helmet = require("helmet");
+const cors = require("cors");
+const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
+const rateLimit = require("express-rate-limit");
+const dotenv = require("dotenv");
+
+// Load environment
+dotenv.config();
+
+// Ensure uploads folder exists
+const uploadsDir = path.join(__dirname, process.env.UPLOADS_PATH || "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// DB connection (created in config/db.js)
+const connectDB = require("./config/db");
+
+// Route modules (implemented in /routes)
+const authRoutes = require("./routes/auth");
+const productRoutes = require("./routes/products");
+const cartRoutes = require("./routes/cart");
+const orderRoutes = require("./routes/orders");
+const userRoutes = require("./routes/users");
+
+// Error handler middleware (implemented in /middleware)
+const { notFound, errorHandler } = require("./middleware/errorHandler");
 
 const app = express();
-const PORT = 5000;
+
+// Connect to MongoDB. If connection fails, log a warning and continue in fallback (in-memory) mode.
+connectDB().then(() => {
+  // successful connection is logged inside connectDB
+}).catch((err) => {
+  console.warn("Failed to connect to MongoDB — running in fallback mode (in-memory).", err && err.message ? err.message : err);
+  // Do not exit; allow the server to run without a DB for development/testing purposes.
+});
 
 // Middleware
-app.use(cors());
-app.use(express.json());
+app.use(helmet());
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser(process.env.COOKIE_SECRET || ""));
 
-// Product data
-const products = [
-  {
-    id: 1,
-    name: "Classic White Shirt",
-    price: 1299,
-    image: "/assets/shirt1.jpg",
-    sizes: ["M", "L", "XL"],
-    category: "formal",
-    description: "Premium cotton white formal shirt perfect for office wear"
-  },
-  {
-    id: 2,
-    name: "Blue Denim Shirt",
-    price: 1499,
-    image: "/assets/shirt2.jpg",
-    sizes: ["M", "L", "XL"],
-    category: "casual",
-    description: "Stylish blue denim shirt for casual outings"
-  },
-  {
-    id: 3,
-    name: "Black Formal Shirt",
-    price: 1399,
-    image: "/assets/shirt3.jpg",
-    sizes: ["M", "L", "XL"],
-    category: "formal",
-    description: "Elegant black formal shirt for professional settings"
-  },
-  {
-    id: 4,
-    name: "Striped Casual Shirt",
-    price: 1199,
-    image: "/assets/shirt4.jpg",
-    sizes: ["M", "L", "XL"],
-    category: "casual",
-    description: "Comfortable striped shirt for everyday wear"
-  },
-  {
-    id: 5,
-    name: "Navy Blue Blazer",
-    price: 2999,
-    image: "/assets/blazer1.jpg",
-    sizes: ["M", "L", "XL"],
-    category: "formal",
-    description: "Premium navy blue blazer for formal occasions"
-  },
-  {
-    id: 6,
-    name: "Grey Chinos",
-    price: 1899,
-    image: "/assets/pants1.jpg",
-    sizes: ["30", "32", "34", "36"],
-    category: "casual",
-    description: "Comfortable grey chinos for smart casual look"
-  }
-];
+// CORS
+// In development allow the requesting origin so the frontend can run on different ports (5173/5174)
+// In production you should set a specific CLIENT_URL and validate origins.
+// CORS - allow localhost dev origins and configured client URL(s)
+const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+const allowedClientUrls = clientUrl.split(",").map((s) => s.trim());
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      // allow non-browser tools or same-origin requests with no origin
+      if (!origin) return cb(null, true);
+      // allow configured client URLs
+      if (allowedClientUrls.includes(origin)) return cb(null, true);
+      // allow any localhost origin in development (different ports like 5173/5174)
+      if (process.env.NODE_ENV !== "production" && origin.startsWith("http://localhost"))
+        return cb(null, true);
+      return cb(new Error("Not allowed by CORS"), false);
+    },
+    credentials: true,
+  }),
+);
 
-// Routes
-app.get('/api/products', (req, res) => {
-  res.json(products);
+// Logging
+if (process.env.NODE_ENV !== "production") {
+  app.use(morgan("dev"));
+}
+
+// Rate limiter
+const limiter = rateLimit({
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || "900000", 10),
+  max: parseInt(process.env.RATE_LIMIT_MAX || "100", 10),
+  standardHeaders: true,
+  legacyHeaders: false,
 });
+app.use(limiter);
 
-app.get('/api/products/:id', (req, res) => {
-  const product = products.find(p => p.id === parseInt(req.params.id));
-  if (product) {
-    res.json(product);
-  } else {
-    res.status(404).json({ message: 'Product not found' });
-  }
-});
+// Serve uploads
+app.use("/uploads", express.static(uploadsDir));
+
+// API routes
+app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/users", userRoutes);
 
 // Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Backend server is running' });
+app.get("/api/health", (req, res) => {
+  res.json({ success: true, message: "Backend server is running" });
 });
 
-app.listen(PORT, () => {
-  console.log(`Backend server running on http://localhost:${PORT}`);
-  console.log(`Products API available at http://localhost:${PORT}/api/products`);
+// 404 handler and central error handler
+app.use(notFound);
+app.use(errorHandler);
+
+// Start server
+const DEFAULT_PORT = parseInt(process.env.PORT || "5000", 10);
+let server;
+
+const startServer = (port) => {
+  server = app.listen(port, () => {
+    console.log(
+      `Server running in ${process.env.NODE_ENV || "development"} mode on http://localhost:${port}`,
+    );
+  });
+
+  server.on("error", (err) => {
+    if (err.code === "EADDRINUSE" && port === DEFAULT_PORT) {
+      const fallbackPort = port + 1;
+      console.warn(`Port ${port} is in use. Trying fallback port ${fallbackPort}...`);
+      startServer(fallbackPort);
+      return;
+    }
+
+    console.error("Server failed to start:", err);
+    process.exit(1);
+  });
+};
+
+startServer(DEFAULT_PORT);
+
+// Graceful shutdown
+process.on("unhandledRejection", (err) => {
+  console.error("Unhandled Rejection:", err);
+  if (server) {
+    server.close(() => process.exit(1));
+  } else {
+    process.exit(1);
+  }
 });
+
+process.on("SIGINT", () => {
+  console.log("SIGINT received: closing server");
+  server.close(() => process.exit(0));
+});
+
+module.exports = app;

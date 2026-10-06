@@ -11,7 +11,6 @@ export default function CartDrawer({
   updateQuantity,
   updateSize,
   totalPrice,
-  onCheckout,
   onProceedToCheckout
 }) {
   return (
@@ -62,7 +61,7 @@ export default function CartDrawer({
             <strong>{formatPrice(totalPrice)}</strong>
           </div>
           <p className="delivery-note" style={{ color: '#555', fontSize: '0.95rem', margin: '8px 0' }}>
-            Pay the delivery charge in advance to confirm the order. In the given number: 01860265807.
+            Delivery charge is added at checkout.
           </p>
           <p className="delivery-fees" style={{ color: '#555', fontSize: '0.95rem', margin: '4px 0 12px' }}>
             Inside Dhaka 70 tk.

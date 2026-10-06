@@ -69,7 +69,7 @@ Open your browser and go to `http://localhost:5173`
 - 🛍️ Product catalog with categories
 - 🛒 Shopping cart functionality
 - 📱 Responsive design
-- 💳 WhatsApp checkout integration
+- 💳 Instagram checkout integration
 - 🎨 Modern dark theme
 
 ## Technologies Used

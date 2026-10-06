@@ -7,14 +7,15 @@ import About from "./components/About";
 import CartDrawer from "./components/CartDrawer";
 import Footer from "./components/Footer";
 import CheckoutReview from "./components/CheckoutReview";
+import AdminLogin from "./components/AdminLogin";
+import AdminOrders from "./components/AdminOrders";
 
-const WHATSAPP_NUMBER = "01860265807";
-
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
 // Comprehensive product data with multiple images per product
 // Newly added products from Photo.pdf (extracted frames)
 const mockProducts = [
   {
-    id: 24,
+    id: 1,
     name: "Summer coded Shirt- Style 1",
     price: 899,
     images: ["/assets/photo-frames/page-01-Im1.jpg","/assets/photo-frames/page-02-Im2.jpg","/assets/photo-frames/page-03-Im3.jpg"],
@@ -24,7 +25,7 @@ const mockProducts = [
     description: "Imported image from Photo.pdf — featured item 1."
   },
   {
-    id: 25,
+    id: 2,
     name: "Summer coded Shirt- Style 2",
     price: 899,
     images: ["/assets/photo-frames/page-04-Im4.jpg","/assets/photo-frames/page-05-Im5.jpg","/assets/photo-frames/page-06-Im6.jpg"],
@@ -35,10 +36,10 @@ const mockProducts = [
   },
   
   {
-    id: 26,
+    id: 3,
     name: "Summer coded Shirt- Style 3",
     price: 899,
-    images: ["/assets/photo-frames/page-07-Im7.jpg","/assets/photo-frames/page-08-Im8.jpg"],
+    images: ["/assets/photo-frames/page-08-Im8.jpg","/assets/photo-frames/page-07-Im7.jpg"],
     sizes: ["M", "L", "XL"],
     category: "photo-import",
     collection: "Photo PDF Collection",
@@ -46,7 +47,7 @@ const mockProducts = [
   },
   
   {
-    id: 27,
+    id: 4,
     name: "Summer coded Shirt- Style 4",
     price: 899,
     images: ["/assets/photo-frames/page-09-Im9.jpg","/assets/photo-frames/page-10-Im10.jpg","/assets/photo-frames/page-11-Im11.jpg"],
@@ -57,9 +58,9 @@ const mockProducts = [
   },
   // Cuban Collar Half Sleeve Collection
   {
-    id: 1,
+    id: 5,
     name: "Cuban Collar - Style 1",
-    price: 779,
+    price: 799,
     images: [
       "/assets/collections/cuban collar half sleeve/IMG_9832.jpg",
       "/assets/collections/cuban collar half sleeve/IMG_9833.jpg",
@@ -70,9 +71,9 @@ const mockProducts = [
     description: "Classic Cuban collar shirt with half sleeves. Perfect for tropical and casual summer wear with a timeless design."
   },
   {
-    id: 2,
+    id: 6,
     name: "Cuban Collar - Style 2",
-    price: 779,
+    price: 799,
     images: [
       "/assets/collections/cuban collar half sleeve/IMG_9835.jpg",
       "/assets/collections/cuban collar half sleeve/IMG_9836.jpg",
@@ -84,9 +85,9 @@ const mockProducts = [
     description: "Contemporary Cuban collar design with enhanced comfort and breathable fabric for warm weather."
   },
   {
-    id: 3,
+    id: 7,
     name: "Cuban Collar - Style 3",
-    price: 779,
+    price: 799,
     images: [
       "/assets/collections/cuban collar half sleeve/IMG_9839.jpg",
       "/assets/collections/cuban collar half sleeve/IMG_9842.jpg",
@@ -99,7 +100,7 @@ const mockProducts = [
 
   // Drop Shoulders Collection
   {
-    id: 4,
+    id: 9,
     name: "Drop Shoulders - Style 1",
     price: 749,
     images: [
@@ -113,7 +114,7 @@ const mockProducts = [
     description: "Modern drop shoulder design offering a relaxed, oversized fit. Perfect for casual streetwear and contemporary styling."
   },
   {
-    id: 5,
+    id: 10,
     name: "Drop Shoulders - Style 2",
     price: 749,
     images: [
@@ -129,9 +130,9 @@ const mockProducts = [
 
   // High Neck Woolen Sweaters Collection
   {
-    id: 6,
+    id: 11,
     name: "High Neck Sweater - Beige",
-    price: 1299,
+    price: 999,
     images: [
       "/assets/collections/high neck woolen sweaters/IMG_9851.jpg",
       "/assets/collections/high neck woolen sweaters/IMG_9852.jpg",
@@ -142,9 +143,9 @@ const mockProducts = [
     description: "Premium woolen sweater with high neck design. Provides warmth and sophistication for cooler seasons."
   },
   {
-    id: 7,
+    id: 12,
     name: "High Neck Sweater - Black & Charcoal Gray ",
-    price: 1299,
+    price: 999,
     images: [
       "/assets/collections/high neck woolen sweaters/IMG_9854.jpg",
       "/assets/collections/high neck woolen sweaters/IMG_9855.jpg",
@@ -158,9 +159,9 @@ const mockProducts = [
 
   // Lacoste Formal Casual Collection
   {
-    id: 8,
-    name: "Lacoste Formal Casual - Style 1",
-    price: 999,
+    id: 13,
+    name: "Lacoste Formal Casual -Blue- Cotton Blend",
+    price: 950,
     images: [
       "/assets/collections/Lecoste formal casual/1dbc968d-e9e1-4967-bddc-8dcaab073397.JPG",
       "/assets/collections/Lecoste formal casual/2d5fd1be-d46f-4514-affd-704af183d434.JPG",
@@ -172,9 +173,9 @@ const mockProducts = [
     description: "Stylish Lacoste-inspired formal casual shirt. Perfect for business casual environments and upscale social events."
   },
   {
-    id: 9,
-    name: "Lacoste Formal Casual - Pale Pink",
-    price: 999,
+    id: 14,
+    name: "Lacoste Formal Casual - Pale Pink -Cotton Blend",
+    price: 950,
     images: [
       "/assets/collections/Lecoste formal casual/a242574b-2db5-4251-acce-fe3d792e2c5d.JPG",
     ],
@@ -186,9 +187,9 @@ const mockProducts = [
 
   // Mens Flannel Check Shirts Collection
   {
-    id: 10,
+    id: 15,
     name: "Flannel Check - Blue, Ash, Red",
-    price: 1499,
+    price: 849,
     images: [
       "/assets/collections/Mens Flannel check shirts/IMG_9846.jpg",
       "/assets/collections/Mens Flannel check shirts/IMG_9847.jpg",
@@ -200,9 +201,9 @@ const mockProducts = [
     description: "Classic red flannel check shirt. Perfect for outdoor activities and casual everyday wear."
   },
   {
-    id: 11,
+    id: 16,
     name: "Flannel Check Styles",
-    price: 1499,
+    price: 849,
     images: [
       "/assets/collections/Mens Flannel check shirts/IMG_9849.jpg",
       "/assets/collections/Mens Flannel check shirts/IMG_9850.jpg",
@@ -215,9 +216,9 @@ const mockProducts = [
 
   // Old Money Collection
   {
-    id: 12,
-    name: "Old Money - Navy Blue & Sky Blue",
-    price: 1699,
+    id: 17,
+    name: "Old Money - Navy Blue & Sky Blue Stripes",
+    price: 999,
     images: [
       "/assets/collections/Old Money /navy blue cotton old money .JPG",
       "/assets/collections/Old Money /sky blue old money pure cotton.jpeg",
@@ -228,9 +229,9 @@ const mockProducts = [
     description: "Old Money style shirt made from pure cotton. Exudes sophistication and timeless elegance."
   },
   {
-    id: 13,
+    id: 18,
     name: "Old Money - Stripes",
-    price: 1699,
+    price: 999,
     images: [
       "/assets/collections/Old Money /red white stripes old money.JPG",
       "/assets/collections/Old Money /white stripes in black old money.jpeg",
@@ -243,9 +244,9 @@ const mockProducts = [
 
   // Old Money Shirts Collection
   {
-    id: 14,
+    id: 19,
     name: "Old Money Shirt - Style 1",
-    price: 1699,
+    price: 949,
     images: [
       "/assets/collections/Old money shirts/IMG_9844.jpg",
       "/assets/collections/Old money shirts/IMG_9861.jpg",
@@ -257,9 +258,9 @@ const mockProducts = [
     description: "Premium Old Money shirt collection. Features classic designs with modern comfort and quality."
   },
   {
-    id: 15,
+    id: 20,
     name: "Old Money Shirt - Blue & Black",
-    price: 1699,
+    price: 949,
     images: [
       "/assets/collections/Old money shirts/IMG_9863.jpg",
       "/assets/collections/Old money shirts/IMG_9864.jpg",
@@ -273,9 +274,9 @@ const mockProducts = [
   
   // Round Neck Woolen Sweaters Collection
   {
-    id: 17,
+    id: 21,
     name: "Round Neck Sweater - Pale Green",
-    price: 2199,
+    price: 899,
     images: [
       "/assets/collections/Round neck woolen sweaters/IMG_9857.jpg",
       "/assets/collections/Round neck woolen sweaters/IMG_9858.jpg",
@@ -286,9 +287,9 @@ const mockProducts = [
     description: "Soft pale green woolen sweater with round neck design. Perfect for layering and creating cozy, comfortable looks."
   },
   {
-    id: 18,
+    id: 22,
     name: "Round Neck Sweater - Gray",
-    price: 2199,
+    price: 899,
     images: [
       "/assets/collections/Round neck woolen sweaters/IMG_9860.jpg",
     ],
@@ -300,9 +301,9 @@ const mockProducts = [
 
   // Summer Friendly Casual Shirts Collection
   {
-    id: 19,
+    id: 23,
     name: "Summer Casual - Bandana Print",
-    price: 1299,
+    price: 949,
     images: [
       "/assets/collections/summer frindly casual shirts/IMG_9826.jpg",
       "/assets/collections/summer frindly casual shirts/IMG_9827.jpg",
@@ -314,9 +315,9 @@ const mockProducts = [
     description: "Lightweight summer casual shirt perfect for warm weather. Breathable fabric keeps you cool and comfortable."
   },
   {
-    id: 20,
+    id: 24,
     name: "Summer Casual - Bandana Print 2",
-    price: 1299,
+    price: 949,
     images: [
       "/assets/collections/summer frindly casual shirts/IMG_9830.jpg",
       "/assets/collections/summer frindly casual shirts/IMG_9831.jpg",
@@ -329,9 +330,9 @@ const mockProducts = [
 
   // Bandana Print Shirts Collection
   {
-    id: 21,
+    id: 25,
     name: "Bandana Print - Style 1",
-    price: 1299,
+    price: 949,
     images: [
       "/assets/collections/summer frindly casual shirts/IMG_9826.jpg",
       "/assets/collections/summer frindly casual shirts/IMG_9827.jpg",
@@ -343,9 +344,9 @@ const mockProducts = [
     description: "Stylish bandana print shirt with vibrant patterns. Perfect for casual outings, summer events, and making a bold fashion statement."
   },
   {
-    id: 22,
+    id: 26,
     name: "Bandana Print - Style 2",
-    price: 1299,
+    price: 949,
     images: [
       "/assets/collections/summer frindly casual shirts/IMG_9829.jpg",
       "/assets/collections/summer frindly casual shirts/IMG_9830.jpg",
@@ -357,9 +358,9 @@ const mockProducts = [
     description: "Premium bandana design with comfortable fit. Ideal for warm weather and adds character to any casual wardrobe."
   },
   {
-    id: 23,
+    id: 27,
     name: "Bandana Print - Style 3",
-    price: 1299,
+    price: 949,
     images: [
       "/assets/collections/summer frindly casual shirts/IMG_9866.jpg",
     ],
@@ -426,21 +427,59 @@ export default function App() {
 
   
 
-  const handleWhatsAppCheckout = () => {
+  const [orderResult, setOrderResult] = useState(null);
+  const [orderError, setOrderError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  const [adminOrders, setAdminOrders] = useState([]);
+  const [adminError, setAdminError] = useState("");
+  const [adminLoading, setAdminLoading] = useState(false);
+
+  const handleConfirmOrder = async (location, shipping) => {
     if (!cart.length) return;
 
-    const lines = cart.map(
-      (item) =>
-        `• ${item.name} | Size: ${item.selectedSize} | Qty: ${item.quantity} | Tk${item.price * item.quantity}`
-    );
+    const deliveryFee = location === "inside" ? 70 : 120;
+    const total = totalPrice + deliveryFee;
 
-    const message = `Hello Posh Pine, I want to order:\n\n${lines.join(
-      "\n"
-    )}\n\nTotal: Tk${totalPrice}`;
+    setIsSubmitting(true);
+    setOrderError("");
 
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank");
-    setShowCheckout(false);
+    try {
+      const response = await fetch(`${API_BASE}/api/orders`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          items: cart.map((item) => ({
+            product: item.id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            selectedSize: item.selectedSize,
+          })),
+          shipping,
+          subtotal: totalPrice,
+          deliveryFee,
+          total,
+        }),
+      });
+
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || payload.message || "Order submission failed");
+      }
+
+      // backend returns { success, message, data: { order } }
+      setOrderResult(payload.data?.order || payload.order || null);
+      setCart([]);
+      setShowCheckout(false);
+    } catch (error) {
+      setOrderError(error.message || "Unable to place order");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const proceedToCheckout = () => {
@@ -450,18 +489,179 @@ export default function App() {
 
   const closeCheckout = () => setShowCheckout(false);
 
+  const fetchAdminOrders = async () => {
+    setAdminLoading(true);
+    setAdminError("");
+    try {
+      const response = await fetch(`${API_BASE}/api/orders`, {
+        credentials: "include",
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || payload.message || "Unable to load admin orders");
+      }
+      setAdminOrders(payload.data?.items || []);
+    } catch (error) {
+      setAdminError(error.message || "Unable to load admin orders");
+    } finally {
+      setAdminLoading(false);
+    }
+  };
+
+  const handleAdminLogin = async ({ username, password }) => {
+    setAdminError("");
+    setAdminLoading(true);
+    try {
+      const response = await fetch(`${API_BASE}/api/auth/admin-login`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || payload.message || "Admin login failed");
+      }
+      if (!payload.data?.user || payload.data.user.role !== "admin") {
+        throw new Error("Admin access required");
+      }
+      setIsAdminLoggedIn(true);
+      setShowAdminLogin(false);
+      await fetchAdminOrders();
+    } catch (error) {
+      setAdminError(error.message || "Admin login failed");
+    } finally {
+      setAdminLoading(false);
+    }
+  };
+
+  const handleAdminLogout = async () => {
+    try {
+      await fetch(`${API_BASE}/api/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (err) {
+      // ignore logout errors
+    }
+    setIsAdminLoggedIn(false);
+    setAdminOrders([]);
+    setAdminError("");
+  };
+
+  const handleChangeOrderStatus = async (orderId, newStatus) => {
+    try {
+      const resp = await fetch(`${API_BASE}/api/orders/${orderId}/status`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      const payload = await resp.json();
+      if (!resp.ok) throw new Error(payload.error || payload.message || "Status update failed");
+      // update local orders list so UI reflects change without refresh
+      setAdminOrders((prev) => prev.map((o) => (o._id === orderId ? payload.data.order : o)));
+    } catch (err) {
+      setAdminError(err.message || "Unable to update status");
+    }
+  };
+
+  if (showAdminLogin) {
+    return (
+      <>
+        <Header
+          cartCount={totalItems}
+          onOpenCart={() => setCartOpen(true)}
+          onAdminClick={() => setShowAdminLogin(true)}
+        />
+        <main>
+          <AdminLogin
+            onLogin={handleAdminLogin}
+            onCancel={() => setShowAdminLogin(false)}
+            error={adminError}
+            loading={adminLoading}
+          />
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
+  if (isAdminLoggedIn) {
+    return (
+      <>
+        <Header
+          cartCount={totalItems}
+          onOpenCart={() => setCartOpen(true)}
+          onAdminClick={() => setShowAdminLogin(true)}
+        />
+        <main>
+          <AdminOrders
+            orders={adminOrders}
+            loading={adminLoading}
+            error={adminError}
+            onLogout={handleAdminLogout}
+            onChangeStatus={handleChangeOrderStatus}
+          />
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
+  if (orderResult) {
+    return (
+      <>
+        <div className="topbar">Order confirmed • Thank you for shopping with us</div>
+        <Header cartCount={totalItems} onOpenCart={() => setCartOpen(true)} onAdminClick={() => setShowAdminLogin(true)} />
+        <main>
+          <section className="checkout-review section">
+            <div className="container">
+              <div className="section-head">
+                <h2>Order Confirmed</h2>
+                <p>Your order has been placed successfully. Our team will process it shortly.</p>
+              </div>
+              <div className="order-confirmation">
+                <p>
+                  <strong>Order ID:</strong> {orderResult._id}
+                </p>
+                <p>
+                  <strong>Name:</strong> {orderResult.shipping.name}
+                </p>
+                <p>
+                  <strong>Phone:</strong> {orderResult.shipping.phone}
+                </p>
+                <p>
+                  <strong>Address:</strong> {orderResult.shipping.address}, {orderResult.shipping.city}
+                </p>
+                <p>
+                  <strong>Total:</strong> Tk{orderResult.total}
+                </p>
+              </div>
+            </div>
+          </section>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
   if (showCheckout) {
     return (
       <>
         <div className="topbar">New arrivals live now • Premium printed shirts • Sizes S to XL</div>
-        <Header cartCount={totalItems} onOpenCart={() => setCartOpen(true)} />
+        <Header cartCount={totalItems} onOpenCart={() => setCartOpen(true)} onAdminClick={() => setShowAdminLogin(true)} />
 
         <main>
           <CheckoutReview
             cart={cart}
             totalPrice={totalPrice}
             onBack={closeCheckout}
-            onConfirm={handleWhatsAppCheckout}
+            onConfirm={handleConfirmOrder}
+            isSubmitting={isSubmitting}
+            errorMessage={orderError}
           />
         </main>
 
@@ -476,7 +676,7 @@ export default function App() {
         New arrivals live now • Premium printed shirts • Sizes S to XL
       </div>
 
-      <Header cartCount={totalItems} onOpenCart={() => setCartOpen(true)} />
+      <Header cartCount={totalItems} onOpenCart={() => setCartOpen(true)} onAdminClick={() => setShowAdminLogin(true)} />
 
       <main>
         <Hero />
@@ -494,7 +694,6 @@ export default function App() {
         updateQuantity={updateQuantity}
         updateSize={updateSize}
         totalPrice={totalPrice}
-        onCheckout={handleWhatsAppCheckout}
         onProceedToCheckout={proceedToCheckout}
       />
     </>
