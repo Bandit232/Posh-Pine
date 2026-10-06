@@ -10,7 +10,9 @@ import CheckoutReview from "./components/CheckoutReview";
 import AdminLogin from "./components/AdminLogin";
 import AdminOrders from "./components/AdminOrders";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
+import { API_URL } from "./config";
+
+const API_BASE = API_URL;
 // Comprehensive product data with multiple images per product
 // Newly added products from Photo.pdf (extracted frames)
 const mockProducts = [
